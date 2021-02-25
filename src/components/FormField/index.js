@@ -1,21 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const FormFieldWrapper = styled.div`
   position: relative;
-
   textarea {
     min-height: 150px;
   }
 
   input[type="color"] {
-    padding-bottom: 0;
+    padding-left: 56px;
   }
 `;
 
 const Label = styled.label``;
-
 Label.Text = styled.span`
   color: #E5E5E5;
   height: 57px;
@@ -35,7 +33,7 @@ Label.Text = styled.span`
 `;
 
 const Input = styled.input`
-  background: #53585d;
+  background: #53585D;
   color: #F5F5F5;
   display: block;
   width: 100%;
@@ -58,30 +56,26 @@ const Input = styled.input`
     border-bottom-color: var(--primary);
   }
 
-  &:focus + span {
+  &:focus:not([type="color"]) + span {
     transform: scale(.6) translateY(-10px);
   }
 
-  ${({ value }) => {
-    const hasValue = value.length > 0;
-    return hasValue && `
-      & + span {
-        transform: scale(.6) translateY(-10px);
-      }
-    `;
-  }}
-
+  ${({ hasValue }) => hasValue && css`
+    &:not([type="color"]) + span {
+      transform: scale(.6) translateY(-10px);
+    }
+  `}
 `;
 
-function FormField({ 
-  label,
-  type,
-  name,
-  value,
-  onChange,
+function FormField({
+  label, type, name, value, onChange,
 }) {
-  const tag = type === 'textarea' ? 'textarea' : 'input';
-  const fieldId =  name;
+  const fieldId = `id_${name}`;
+  const isTypeTextArea = type === 'textarea';
+  const tag = isTypeTextArea ? 'textarea' : 'input';
+
+  const hasValue = Boolean(value.length);
+
   return (
     <FormFieldWrapper>
       <Label htmlFor={fieldId}>
@@ -90,7 +84,7 @@ function FormField({
           id={fieldId}
           type={type}
           name={name}
-          valeue={value}
+          hasValue={hasValue}
           onChange={onChange}
         />
         <Label.Text>
@@ -104,14 +98,16 @@ function FormField({
 
 FormField.defaultProps = {
   type: 'text',
+  value: '',
+  onChange: () => {},
 };
 
 FormField.propTypes = {
   label: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['textarea', 'text', 'color']).isRequired,
+  type: PropTypes.string,
   name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
 };
 
 export default FormField;
