@@ -11,6 +11,7 @@ function Home() {
   const [dadosIniciais, setDadosIniciais] = useState([]);
 
   useEffect(() => {
+    // http://localhost:8080/categorias?_embed=videos
     categoriasRepository.getAllWithVideos()
       .then((categoriasComVideos) => {
         console.log(categoriasComVideos);
@@ -20,7 +21,6 @@ function Home() {
         console.log(err.message);
       });
   }, []);
-  // http://localhost:8080/categorias?_embed=videos
 
   return (
     <PageDefault paddingAll={0}>
